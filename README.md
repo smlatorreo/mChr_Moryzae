@@ -57,10 +57,10 @@ Finally, we assessed the monophyly of the host-infecting isolates to count for t
 ## Differentiating between sexual mating and horizontal genetic transfer through *D* statistics
 We subset genomic SNP information from all the mChrA putative carrier isolates, together with random selected isolates as controls. We also included the *Digitaria*-infecting isolate Dig41 to be used as an outgroup. [The resulting VCF file is provided here](/data/dstats/subset.coreChr.snps.filtered.vcf.gz)  
 
-We used popsats as well as a [*Dstat.py*](/scripts/Dstats/Dstat.py) to compute the Patterson's D statistic using the following configurations:  
+We used popsats as well as a [*Dstat.py*](https://github.com/smlatorreo/Dstats/) to compute the Patterson's D statistic using the following configurations:  
 
-[\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.txt)
-[\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_without_mChrA\)](/data/dstats/Dtest_configurations.control_without_mChrA.txt)
+[\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.txt)  
+[\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_without_mChrA\)](/data/dstats/Dtest_configurations.control_without_mChrA.txt)  
 [\(Dig41, Br62 ; Isolate_with_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.control_with_mChrA.txt)
 
 
