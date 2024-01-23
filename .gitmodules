@@ -1,0 +1,3 @@
+[submodule "scripts/Dstats"]
+	path = scripts/Dstats
+	url = https://github.com/smlatorreo/Dstats
