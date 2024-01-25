@@ -1,10 +1,7 @@
 # Data and code for the manuscript: "Multiple Horizontal Mini-Chromosome Transfers Drive Genome Evolution of Clonal Blast Fungus Lineages"
 DOI: XX.XX.XX
 
-## Requirements
-
-The following software was used for preprocessing, mapping and calling variants
-
+## Software requirements
 Program                  | Location
 ------------------------ | ----------------------------
 *AdapterRemoval2 v.2*    | (https://github.com/mikkelschubert/adapterremoval)
@@ -20,7 +17,7 @@ Program                  | Location
 *popstats*               | (https://github.com/pontussk/popstats)
 *BEAST2 v.2.7.6*         | (https://github.com/CompEvol/beast2)
 
-### Preprocessing and mapping of short reads to the rice-infecting *M. oryzae* reference genome
+## Preprocessing and mapping of short reads to the rice-infecting *M. oryzae* reference genome
 
 Raw .fastq sequences were trimmed with *AdapterRemoval2*
 ```bash
