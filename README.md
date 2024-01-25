@@ -89,7 +89,7 @@ The filtered [VCF file can be found here](/data/preprocess_and_SNPs/ALL.snps.fil
 
 
 ## Bayesian-based dated phyloenetic reconstruction
-We submitted 6 independent chains to [CIPRES](doi: 10.1109/GCE.2010.5676129).  
+We submitted 6 independent chains to [CIPRES](https://www.phylo.org/).  
 Here, we provide the [submitted configuration .xlm file](/data/BEAST2/Rice_Outgroup.Fullinfo.HYK.LogNormPriorAdj.20M.xml.gz)  
 As we use whole genomic SNPs (N = 95044), we rescaled the calculations using the number of invariant A/C/G/T sites using the following tag inside xml file:
 `<data id='clonal_rice' spec='FilteredAlignment' filter='-' data='@clonal_rice_Original' constantSiteWeights='8166700 8817938 8831984 8177939'/>`  
