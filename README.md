@@ -1,5 +1,4 @@
-# Data and code for the manuscript: "Multiple Horizontal Mini-Chromosome Transfers Drive Genome Evolution of Clonal Blast Fungus Lineages"
-DOI: XX.XX.XX
+# Data and code for the manuscript: "Multiple horizontal mini-chromosome transfers drive genome evolution of clonal blast fungus lineages"
 
 ## Software requirements
 Program                  | Location
