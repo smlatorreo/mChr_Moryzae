@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/747116432.svg)](https://zenodo.org/doi/10.5281/zenodo.10628812)
+
 # Data and code for the manuscript: "Multiple horizontal mini-chromosome transfers drive genome evolution of clonal blast fungus lineages"
 
 ## Software requirements
