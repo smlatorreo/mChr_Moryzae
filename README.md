@@ -152,4 +152,56 @@ We used popsats as well as a [*Dstat.py*](https://github.com/smlatorreo/Dstats/)
 [\(Dig41, Br62 ; Isolate_with_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.control_with_mChrA.txt)
 
 
+## Simulations to estimate the D-statistic detection power under two scenarios
+Our *D* statistic analyses aimed to investigate the likely origin of mChrA. We hypothesized that within a 4-taxa configuration `Dig41, (Br62, (Isolate_without_mChrA, Isolate_with_mChrA))`, a Patterson *D* value  > 0 would indicate a likely case of introgression as the cause of mChrA acquisition. Conversely, a *D* statistic of 0 would suggest a scenario of horizontal gene transfer.  
+
+Howeverm, to further understand the implications of ancestral introgression followed by multiple generations of backcrossing, we examined the detection power of our hypothesis considering: i) The probability of sexual reproduction per generation; ii) The number of generations; and iii) Linkage Disequilibrium.  
+
+We simulated two scenarios, modeling a single pulse of introgression followed by multiple generations of backcrosses, and measured the resulting *D* statistic. Below is a brief description of our process.
+
+Based on the genome-wide SNP data contained in the VCf file, we used [*from_VCF_to_bin_fasta.py*](/scripts/simulations/from_VCF_to_bin_fasta.py) to codify invariable and variable positions for each isolate in respect to the reference genome. As a result, we generated fasta-like files where reference-type alleles are codified as 0's and alternative-type alleles are codified as 1's. The files can be found here: [Dig41](/data/simulations/Dig41.fa.gz), [Br62](/data/simulations/Br62.fa.gz), [FJ12JN-084-3](/data/simulations/FJ12JN-084-3.fa.gz), [658](/data/simulations/658.fa.gz)
+
+We measured a Patterson's *D* statistic of 0 (Z-score = -0.22) in the following 4-taxa configuration:
+`Dig41, (Br62, (FJ12JN-084-3, 658))`
+
+We then carried out simulations under two scenarios:
+
+### Scenario 1. Backcrosses
+
+We then recreated a scenario of a single pulse of introgression from the Eleusine-infecting isolate Br62 into a rice-infecting isolate (658). We again meassured a Patterson's D statistic of ~1 (Z-score >> 3) in this hypothetical F1 individual.  
+
+We then recreated a back-cross between the F1 individual and the original 658 isolate. The backcross was modelled as the binomial probability (*P*) for the cross to happen. After each generation, a poisson distribution with a lambda of 7E-8  * genome_size was used to add new random mutations.
+
+We logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0.
+
+```bash
+LD50=35000
+jackknife_block=5000000
+generations=1000
+
+for sex_prob in 0.0{1..9} 0.{1..9} 1.0; do
+    python simulate_D.py 658.fa FJ12JN-084-3.fa Br62.fa Dig41.fa $sex_prob $LD50 $jackknife_block $generations
+done
+```
+
+All results can be found at [simulations_output.tar.gz](/data/simulations/simulations_output.tar.gz)
+
+
+### Scenario 2. Allowing mate choice
+
+In Scenario 1, each generation is allowed to backcross with the parental rice-infecting isolate with a probability *P*. Here, we allow a process of choosing a mate. This process is governed by a binomial probability *B*. Specifically, if an individual does not backcross with the parental isolate, it will instead mate with another individual from the same generation.
+
+Again, we logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0.
+
+```bash
+LD50=35000
+jackknife_block=5000000
+generations=1000
+
+for sex_prob in 0.0{1..9} 0.{1..9} 1.0; do
+    python simulate_D_mate_choice.py 658.fa FJ12JN-084-3.fa Br62.fa Dig41.fa $sex_prob $LD50 $jackknife_block $generations
+done
+```
+
+All results can be found at [simulations_with_mate_choice_output.tar.gz](/data/simulations/simulations_with_mate_choice_output.tar.gz)
 
