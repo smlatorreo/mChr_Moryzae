@@ -3,20 +3,24 @@
 # Data and code for the manuscript: "Multiple horizontal mini-chromosome transfers drive genome evolution of clonal blast fungus lineages"
 
 ## Software requirements
-Program                  | Location
------------------------- | ----------------------------
-*AdapterRemoval2 v.2*    | (https://github.com/mikkelschubert/adapterremoval)
-*Bwa-mem2 v.2.1*         | (https://github.com/bwa-mem2/bwa-mem2)
-*samtools v.1.11*        | (https://github.com/samtools/samtools)
-*sambamba v0.8.0*        | (https://github.com/biod/sambamba)
-*GATK v.4.2*             | (https://github.com/broadinstitute/gatk/releases)
-*bcftools v.1.11*        | (https://github.com/samtools/bcftools)
-*IQ-Tree v.2*            | (https://github.com/iqtree/iqtree2)
-*TreeTime*               | (https://github.com/neherlab/treetime)
-*Dstat.py*               | (https://github.com/smlatorreo/Dstats)
-*tped2fasta.sh*          | (https://github.com/smlatorreo/misc_tools/blob/main/tped2fasta.sh)
-*popstats*               | (https://github.com/pontussk/popstats)
-*BEAST2 v.2.7.6*         | (https://github.com/CompEvol/beast2)
+Program                     | Location
+--------------------------- | ----------------------------
+*AdapterRemoval2 v.2*       | (https://github.com/mikkelschubert/adapterremoval)
+*Bwa-mem2 v.2.1*            | (https://github.com/bwa-mem2/bwa-mem2)
+*samtools v.1.11*           | (https://github.com/samtools/samtools)
+*sambamba v0.8.0*           | (https://github.com/biod/sambamba)
+*GATK v.4.2*                | (https://github.com/broadinstitute/gatk/releases)
+*bcftools v.1.11*           | (https://github.com/samtools/bcftools)
+*IQ-Tree v.2*               | (https://github.com/iqtree/iqtree2)
+*K2P_from_VCF.py*           | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/K2P_from_VCF.py)
+*TreeTime*                  | (https://github.com/neherlab/treetime)
+*Dstat.py*                  | (https://github.com/smlatorreo/Dstats)
+*tped2fasta.sh*             | (https://github.com/smlatorreo/misc_tools/blob/main/tped2fasta.sh)
+*popstats*                  | (https://github.com/pontussk/popstats)
+*BEAST2 v.2.7.6*            | (https://github.com/CompEvol/beast2)
+*from_VCF_to_bin_fasta.py*  | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/from_VCF_to_bin_fasta.py)
+*simulate_D.py*             | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D.py)
+*simulate_D_mate_choice.py* | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D_mate_choice.py)
 
 ## Preprocessing and mapping of short reads to the rice-infecting *M. oryzae* reference genome
 
@@ -108,23 +112,30 @@ File | Description
 [Confidence](/data/mugration_analyses/confidence.csv) | Per-branch mChrA ascertainment confidence
 
 ## Genetic distances between Rice-infecting and Eleusine-infecting isolates
-We measured the genetic Hamming distances between rice-infecting isolates and the Eleusine-infecting isolate Br62 at the [whole core chromosome](/data/distances/AG006_coreChr.bed) and in [100 randomly selected regions](/data/distances/ALL.random_regions.bed) as follows:
+We measured Kimura two-parameter (K2P) distances in [contiguous, non-overlapping 100bp-sized windows between mChrA](/data/distances/mChrA_regions_100Kb.bed) in all [Oryza-infecting isolates carrying this sequence (n=32) and Eleusine-infecting isolate Br62](/data/distances/samples_mChrA.list). We used a the python script [K2P_from_VCF.py](/scripts/K2P_from_VCF.py) to compute the distances:
 
 ```bash
-vcf=$1
-sample=$2
+# Iterate through the bed regions
+while read region; do
+	# Fields from a bed-format file
+	contig=$(echo $region | cut -f1 -d " ")
+	start=$(echo $region | cut -f2 -d " ")
+	end=$(echo $region | cut -f3 -d " ")
 
-core_distance = $(bcftools view -R AG006_mChrA.bed -a -s Br62,$sample $vcf | bcftools view -m2 -M2 -i "(AN == 2)&&(AC != AN)" -H | awk '$5 != "*"' | wc -l)
-echo -e "Core_distance\t$core_distance"
+	# Subset and index new temporary VCF for every bed region
+	bcftools view -S samples_mChrA.list -r $contig\:$start\-$end ALL.snps.filtered.vcf.gz | bgzip > $contig.$start.$end.tmp.vcf.gz
+	tabix -p vcf $contig.$start.$end.tmp.vcf.gz
 
-for i in {1..100}; do
-    d = $(bcftools view -R random_regions_bed/r$i.bed -a -s Br62,$sample $vcf | bcftools view -m2 -M2 -i "(AN == 2)&&(AC != AN)" -H | awk '$5 != "*"' | wc -l)
-    echo -e "Radom_region_$i_distance\t$d"
-done
+	# Compute Kimura two-parameter distances
+	python K2P_from_VCF.py $contig.$start.$end.tmp.vcf.gz samples_mChrA.list > $contig.$start.$end.K2P.dist
 
+	# Remove temporary VCF
+	rm $contig.$start.$end.tmp.vcf.gz*
+done < mChrA_regions_100Kb.bed
 ```
+A [summary of the distances can be found here](/data/distances/summary_distances_mChrA_windows100kb_kimura-2-param_to_Br62.tsv)  
 
-[A summary table with the distances can be found here](/data/distances/summary_distances_to_Br62.tsv)
+Similarly, we also measured K2P distances across [100 non-overlapping and randomly sampled 100kb core chromosomal regions](/data/distances/coreChr_random_regions_100Kb.bed) between each isolate and Br62. The output [summary can be found here](/data/distances/summary_distances_coreChr_windows100kb_kimura-2-param_to_Br62.tsv)
 
 ## Comparing mChrA tree phylogeny with random selected tree topologies
 We subset two VCF files with all the putative carriers of the mChrA. [The first VCF file contains SNPs belonging to the core chromosome regions](/data/random_trees/mChrA_samples.coreChr.snps.filtered.maxmiss10.vcf.gz), while [the second VCF contains SNPs only from the mChrA region](data/random_trees/mChrA_samples.mChrA.snps.filtered.maxmiss10.vcf.gz)
@@ -170,7 +181,7 @@ We then carried out simulations under two scenarios:
 
 We then recreated a scenario of a single pulse of introgression from the Eleusine-infecting isolate Br62 into a rice-infecting isolate (658). We again meassured a Patterson's D statistic of ~1 (Z-score >> 3) in this hypothetical F1 individual.  
 
-We then recreated a back-cross between the F1 individual and the original 658 isolate. The backcross was modelled as the binomial probability (*P*) for the cross to happen. After each generation, a poisson distribution with a lambda of 7E-8  * genome_size was used to add new random mutations.
+We then recreated a back-cross between the F1 individual and the original 658 isolate. The backcross was modelled as the binomial probability (*P*) for the cross to happen. After each generation, a poisson distribution with a *lambda* of 7E-8  * genome_size was used to add new random mutations.
 
 We logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0.
 
