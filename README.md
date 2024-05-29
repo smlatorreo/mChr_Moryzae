@@ -166,11 +166,11 @@ We used popsats as well as a [*Dstat.py*](https://github.com/smlatorreo/Dstats/)
 ## Simulations to estimate the D-statistic detection power under two scenarios
 Our *D* statistic analyses aimed to investigate the likely origin of mChrA. We hypothesized that within a 4-taxa configuration `Dig41, (Br62, (Isolate_without_mChrA, Isolate_with_mChrA))`, a Patterson *D* value  > 0 would indicate a likely case of introgression as the cause of mChrA acquisition. Conversely, a *D* statistic of 0 would suggest a scenario of horizontal gene transfer.  
 
-Howeverm, to further understand the implications of ancestral introgression followed by multiple generations of backcrossing, we examined the detection power of our hypothesis considering: i) The probability of sexual reproduction per generation; ii) The number of generations; and iii) Linkage Disequilibrium.  
+However, to further understand the implications of ancestral introgression followed by multiple generations of backcrossing, we examined the detection power of our hypothesis considering: i) The probability of sexual reproduction per generation; ii) The number of generations; and iii) Linkage Disequilibrium.  
 
 We simulated two scenarios, modeling a single pulse of introgression followed by multiple generations of backcrosses, and measured the resulting *D* statistic. Below is a brief description of our process.
 
-Based on the genome-wide SNP data contained in the VCf file, we used [*from_VCF_to_bin_fasta.py*](/scripts/simulations/from_VCF_to_bin_fasta.py) to codify invariable and variable positions for each isolate in respect to the reference genome. As a result, we generated fasta-like files where reference-type alleles are codified as 0's and alternative-type alleles are codified as 1's. The files can be found here: [Dig41](/data/simulations/Dig41.fa.gz), [Br62](/data/simulations/Br62.fa.gz), [FJ12JN-084-3](/data/simulations/FJ12JN-084-3.fa.gz), [658](/data/simulations/658.fa.gz)
+Based on the genome-wide SNP data contained in the VCF, we used [*from_VCF_to_bin_fasta.py*](/scripts/simulations/from_VCF_to_bin_fasta.py) to codify invariable and variable positions for each isolate in respect to the reference genome. As a result, we generated fasta-like files where reference-type alleles are codified as 0's and alternative-type alleles are codified as 1's. The files can be found here: [Dig41](/data/simulations/Dig41.fa.gz), [Br62](/data/simulations/Br62.fa.gz), [FJ12JN-084-3](/data/simulations/FJ12JN-084-3.fa.gz), [658](/data/simulations/658.fa.gz)
 
 We measured a Patterson's *D* statistic of 0 (Z-score = -0.22) in the following 4-taxa configuration:
 `Dig41, (Br62, (FJ12JN-084-3, 658))`
@@ -179,7 +179,7 @@ We then carried out simulations under two scenarios:
 
 ### Scenario 1. Backcrosses
 
-We then recreated a scenario of a single pulse of introgression from the Eleusine-infecting isolate Br62 into a rice-infecting isolate (658). We again meassured a Patterson's D statistic of ~1 (Z-score >> 3) in this hypothetical F1 individual.  
+We then recreated a scenario of a single pulse of introgression from the Eleusine-infecting isolate Br62 into a rice-infecting isolate (658). We again measured a Patterson's D statistic of ~1 (Z-score >> 3) in this hypothetical F1 individual.  
 
 We then recreated a back-cross between the F1 individual and the original 658 isolate. The backcross was modelled as the binomial probability (*P*) for the cross to happen. After each generation, a poisson distribution with a *lambda* of 7E-8  * genome_size was used to add new random mutations.
 

@@ -156,12 +156,12 @@ generations = int(argv[8])
 print('State\tABBA\tBABA\tTotal\tD\tN_blocks\tStd_Err\tZ', flush=True)
 
 # Compute D at the original state
-print('State0', *Dstats(P2, P1, Test, Out, block_len).values(), sep = '\t', flush=True)
+print('State0', *Dstats(P1, P2, Test, Out, block_len).values(), sep = '\t', flush=True)
 
 # Single pulse of introgression and compute D
 F1 = recomb(Test, P1, LD50)
 F1P = recomb(Test, P1, LD50)
-print('F1', *Dstats(P2, F1, Test, Out, block_len).values(), sep = '\t', flush=True)
+print('F1', *Dstats(F1, P2, Test, Out, block_len).values(), sep = '\t', flush=True)
 
 # Simulate recurrent crosses between offscript and either a the parental individual (backcross) or another mate from the same offspring (offspringP) for N generations given a sex probability P
 # Compute D after each generation
@@ -177,7 +177,7 @@ for gen in range(generations):
             offspringP = recomb(offspring, offspringP, LD50)
     offspring = drift(offspring)
     offspringP = drift(offspringP)
-    print('Back-cross{}'.format(gen+1), *Dstats(P2, offspring, Test, Out, block_len).values(), sep='\t', flush=True)
+    print('Back-cross{}'.format(gen+1), *Dstats(offspring, P2, Test, Out, block_len).values(), sep='\t', flush=True)
 
 print('#sexP={};LD50={};block_len={}'.format(sexP,LD50,block_len), file=stderr)
 print('#Last state. Generation:', gen+1, file=stderr)
