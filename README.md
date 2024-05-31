@@ -183,7 +183,7 @@ We then recreated a scenario of a single pulse of introgression from the Eleusin
 
 We then recreated a back-cross between the F1 individual and the original 658 isolate. The backcross was modelled as the binomial probability (*P*) for the cross to happen. After each generation, a poisson distribution with a *lambda* of 7E-8  * genome_size was used to add new random mutations.
 
-We logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0.
+We logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0. The code to reproduce Scenario 1 can be found as [simulate_D.py](/scripts/simulations/simulate_D.py)
 
 ```bash
 LD50=35000
@@ -202,7 +202,7 @@ All results can be found at [simulations_output.tar.gz](/data/simulations/simula
 
 In Scenario 1, each generation is allowed to backcross with the parental rice-infecting isolate with a probability *P*. Here, we allow a process of choosing a mate. This process is governed by a binomial probability *B*. Specifically, if an individual does not backcross with the parental isolate, it will instead mate with another individual from the same generation.
 
-Again, we logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0.
+Again, we logged Patterson's *D* statistics after each generation and estimated the number of generations at which D is statistically equal to 0. The code to reproduce Scenario 2 can be found as [simulate_D_mate_choice.py](/scripts/simulations/simulate_D_mate_choice.py)
 
 ```bash
 LD50=35000
