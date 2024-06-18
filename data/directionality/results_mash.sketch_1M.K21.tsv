@@ -1,0 +1,6 @@
+AG006.mChrA.fasta	AG006.coreChr.fasta	0.231274	0	3903/1000000
+AG006.coreChr.fasta	Br62.mChrA.fasta	0.206408	0	6597/1000000
+AG006.mChrA.fasta	Br62.coreChr.fasta	0.168311	0	14802/1000000
+Br62.mChrA.fasta	Br62.coreChr.fasta	0.143718	0	25060/1000000
+AG006.mChrA.fasta	Br62.mChrA.fasta	0.0140363	0	593256/1000000
+AG006.coreChr.fasta	Br62.coreChr.fasta	0.0118398	0	639162/1000000

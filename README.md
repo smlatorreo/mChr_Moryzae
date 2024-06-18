@@ -3,24 +3,28 @@
 # Data and code for the manuscript: "Multiple horizontal mini-chromosome transfers drive genome evolution of clonal blast fungus lineages"
 
 ## Software requirements
-Program                     | Location
---------------------------- | ----------------------------
-*AdapterRemoval2 v.2*       | (https://github.com/mikkelschubert/adapterremoval)
-*Bwa-mem2 v.2.1*            | (https://github.com/bwa-mem2/bwa-mem2)
-*samtools v.1.11*           | (https://github.com/samtools/samtools)
-*sambamba v0.8.0*           | (https://github.com/biod/sambamba)
-*GATK v.4.2*                | (https://github.com/broadinstitute/gatk/releases)
-*bcftools v.1.11*           | (https://github.com/samtools/bcftools)
-*IQ-Tree v.2*               | (https://github.com/iqtree/iqtree2)
-*K2P_from_VCF.py*           | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/K2P_from_VCF.py)
-*TreeTime*                  | (https://github.com/neherlab/treetime)
-*Dstat.py*                  | (https://github.com/smlatorreo/Dstats)
-*tped2fasta.sh*             | (https://github.com/smlatorreo/misc_tools/blob/main/tped2fasta.sh)
-*popstats*                  | (https://github.com/pontussk/popstats)
-*BEAST2 v.2.7.6*            | (https://github.com/CompEvol/beast2)
-*from_VCF_to_bin_fasta.py*  | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/from_VCF_to_bin_fasta.py)
-*simulate_D.py*             | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D.py)
-*simulate_D_mate_choice.py* | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D_mate_choice.py)
+Program                      | Location
+---------------------------- | ----------------------------
+*AdapterRemoval2 v.2*        | (https://github.com/mikkelschubert/adapterremoval)
+*Bwa-mem2 v.2.1*             | (https://github.com/bwa-mem2/bwa-mem2)
+*samtools v.1.11*            | (https://github.com/samtools/samtools)
+*sambamba v0.8.0*            | (https://github.com/biod/sambamba)
+*GATK v.4.2*                 | (https://github.com/broadinstitute/gatk/releases)
+*bcftools v.1.11*            | (https://github.com/samtools/bcftools)
+*IQ-Tree v.2*                | (https://github.com/iqtree/iqtree2)
+*K2P_from_VCF.py*            | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/K2P_from_VCF.py)
+*TreeTime*                   | (https://github.com/neherlab/treetime)
+*Dstat.py*                   | (https://github.com/smlatorreo/Dstats)
+*tped2fasta.sh*              | (https://github.com/smlatorreo/misc_tools/blob/main/tped2fasta.sh)
+*popstats*                   | (https://github.com/pontussk/popstats)
+*BEAST2 v.2.7.6*             | (https://github.com/CompEvol/beast2)
+*from_VCF_to_bin_fasta.py*   | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/from_VCF_to_bin_fasta.py)
+*SPAdes v.4.0.0*             | (https://github.com/ablab/spades)
+*Minimap2 v.2.28*            | (https://github.com/lh3/minimap2)
+*extract_read_from_fasta.py* | (https://github.com/smlatorreo/misc_tools/blob/main/extract_read_from_fasta.py)
+*Mash v.2.3*                 | (https://github.com/marbl/Mash)
+*simulate_D.py*              | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D.py)
+*simulate_D_mate_choice.py*  | (https://github.com/smlatorreo/mChr_Moryzae/blob/main/scripts/simulations/simulate_D_mate_choice.py)
 
 ## Preprocessing and mapping of short reads to the rice-infecting *M. oryzae* reference genome
 
@@ -161,6 +165,48 @@ We used popsats as well as a [*Dstat.py*](https://github.com/smlatorreo/Dstats/)
 [\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.txt)  
 [\(Dig41, Br62 ; Isolate_without_mChrA, Isolate_without_mChrA\)](/data/dstats/Dtest_configurations.control_without_mChrA.txt)  
 [\(Dig41, Br62 ; Isolate_with_mChrA, Isolate_with_mChrA\)](/data/dstats/Dtest_configurations.control_with_mChrA.txt)
+
+
+## Directionality
+It has been shown that mini-chromosomes are often generated as the result of genomic rearrangements of core chromosomes ([Langner et al. 2021](https://doi.org/10.1371/journal.pgen.1009386)). This characteristic allows us to hypothesise that a lineage where a mini-chromosome originated will have greater similarity between its core chromosomes and that mini-chromosome compared to a different lineage that might receive it. Using this logic, we measured patterns of k-mer sharing between core chromosomes and mini-chromosomes in the Eleusine isolate Br62 and the rice isolate AG006.  
+
+We used SPAdes to de-novo assembly the Br62 genome
+```bash
+spades.py -1 Br62.R1.fastq.gz -2 Br62.R2.fastq.gz -t 10 -o Br62
+```
+[The assembled Br62 genome can be found here](/data/directionality/Br62.scaffolds.fasta.gz)  
+
+We then identified contigs with high confidence that belong to either mChrA (Contig 10 in the AG006 assembly) or the core chromosomes using minimap2
+
+```bash
+# Whole genome alignment with Minimap2
+minimap2 Br62.scaffolds.fasta.gz AG006.fasta > Br62_aligned_to_AG006.paf
+
+# Selecting name of the contigs aligning to the mChrA ("Contig10")
+# We only selected alignments with high confidence, mapping quality = 60 (Column 12)
+grep "Contig10" Br62_aligned_to_AG006.paf | awk '$12 == 60' | cut -f6 | sort | uniq > Br62.mChrA.list
+
+# Similarly, we selected contigs aligning to the core chromosomes (Contig01,Contig02,Contig03,Contig04,Contig06,Contig08,Contig09,Contig12,Contig13)
+grep Contig0[1234689] | awk '$12 == 60' | cut -f6 | sort | uniq > Br62.coreChr.list
+grep Contig1[23] | awk '$12 == 60' | cut -f6 | sort | uniq >> Br62.coreChr.list
+
+# Finally, we subset the contigs from the original alignment
+python extract_read_from_fasta.py Br62.scaffolds.fasta -l Br62.mChrA.list > Br62.mChrA.fasta
+python extract_read_from_fasta.py Br62.scaffolds.fasta -l Br62.coreChr.list > Br62.coreChr.fasta
+```
+Finally, we used Mash to measure the number of shared kmer-sketches and Mash distances among:
+* AG006 coreChr
+* AG006 mChrA
+* Br62 coreChr
+* Br62 mChrA
+
+```bash
+# Using a sketch size or 1M
+# Deafult kmer size pf 21
+
+mash triangle -s 1000000 -E Br62.coreChr.fasta Br62.mChrA.fasta AG006.coreChr.fasta AG006.mChrA.fasta | sort -k3,3nr > results_mash.sketch_1M.K21.tsv
+```
+[The Mash results can be found here](/data/directionality/results_mash.sketch_1M.K21.tsv)  
 
 
 ## Simulations to estimate the D-statistic detection power under two scenarios
